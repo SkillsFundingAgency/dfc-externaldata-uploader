@@ -26,7 +26,7 @@
           <SSIS:Property SSIS:Name="CreatorComputerName">DESKTOP-2M34BCF</SSIS:Property>
           <SSIS:Property SSIS:Name="Description">
           </SSIS:Property>
-          <SSIS:Property SSIS:Name="PasswordVerifier" SSIS:Sensitive="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAD5xNPsWHBkiFaR7Y4qVSaQAAAAACAAAAAAAQZgAAAAEAACAAAAB/I5noCF7TixeaNue7SHr+LFmVwg9X9e8ww7XYl3/3gQAAAAAOgAAAAAIAACAAAACRmgWZyp0aBqr0Ed0pT4B6NJDHem1dUMLRKHTZZth06ZAAAAAVyEwRJZO+QrnkaOAC9hTVooLDMgwqeXAzSlO6c+pogeZzxjsN1Dwmm1tId0MZ5PbEqkKI6Ey1bsu+EGVqI9HE2boJLFaveHhKoXvKAN0fbqALZdbiN4dAf1iCi97zw/wEaW57hlE/6tJVaRHTm9vvZW5/Wzyl8Us2pcryYKlQKU2cZbxPVYQw/mZn9PwRCt1AAAAA0nU4lSKPNngQSUFk+SWoQA6+gwJbeulqnwaCxcvzVUx5WEdcsmnu46aaIx1HO8RJwjFE1mViVBh8Xl/VAySceg==</SSIS:Property>
+          <SSIS:Property SSIS:Name="PasswordVerifier" SSIS:Sensitive="0">__AzureOnspdAccountKey__</SSIS:Property>
           <SSIS:Property SSIS:Name="FormatVersion">1</SSIS:Property>
         </SSIS:Properties>
         <SSIS:Packages>
@@ -77,7 +77,7 @@
                     <SSIS:Property SSIS:Name="IncludeInDebugDump">0</SSIS:Property>
                     <SSIS:Property SSIS:Name="Required">0</SSIS:Property>
                     <SSIS:Property SSIS:Name="Sensitive">0</SSIS:Property>
-                    <SSIS:Property SSIS:Name="Value">Data Source=localhost\MSSQLSERVER01;Initial Catalog=dfc-coursedirectory;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;</SSIS:Property>
+                    <SSIS:Property SSIS:Name="Value">__CDConnectionString__</SSIS:Property>
                     <SSIS:Property SSIS:Name="DataType">18</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
