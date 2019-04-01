@@ -7,20 +7,41 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlobStorage", "src\BlobStor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlobStorage.Functions", "src\BlobStorage.Functions\BlobStorage.Functions.csproj", "{80EA8192-0713-4B57-8564-F0DD5D0AA6B8}"
 EndProject
+Project("{159641D6-6404-4A2A-AE62-294DE0FE8301}") = "BlobStorage.Packages", "src\BlobStorage.Packages\BlobStorage.Packages.dtproj", "{01050248-079B-4728-B978-A9D510FD84F8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E83742CB-F6C0-4BBF-97D1-31E5F5577230}"
+	ProjectSection(SolutionItems) = preProject
+		src\StoredProcedures\dfc_OnspdCountryUpdate.sql = src\StoredProcedures\dfc_OnspdCountryUpdate.sql
+		src\StoredProcedures\dfc_OnspdCountyUpdate.sql = src\StoredProcedures\dfc_OnspdCountyUpdate.sql
+		src\StoredProcedures\dfc_OnspdExecuteSsisPackage.sql = src\StoredProcedures\dfc_OnspdExecuteSsisPackage.sql
+		dfc_OnspdUpdate.sql = dfc_OnspdUpdate.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Development|Any CPU = Development|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D7DD6038-A425-4916-9954-9CA96EEBE748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D7DD6038-A425-4916-9954-9CA96EEBE748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7DD6038-A425-4916-9954-9CA96EEBE748}.Development|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7DD6038-A425-4916-9954-9CA96EEBE748}.Development|Any CPU.Build.0 = Debug|Any CPU
 		{D7DD6038-A425-4916-9954-9CA96EEBE748}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7DD6038-A425-4916-9954-9CA96EEBE748}.Release|Any CPU.Build.0 = Release|Any CPU
 		{80EA8192-0713-4B57-8564-F0DD5D0AA6B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{80EA8192-0713-4B57-8564-F0DD5D0AA6B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80EA8192-0713-4B57-8564-F0DD5D0AA6B8}.Development|Any CPU.ActiveCfg = Debug|Any CPU
+		{80EA8192-0713-4B57-8564-F0DD5D0AA6B8}.Development|Any CPU.Build.0 = Debug|Any CPU
 		{80EA8192-0713-4B57-8564-F0DD5D0AA6B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80EA8192-0713-4B57-8564-F0DD5D0AA6B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01050248-079B-4728-B978-A9D510FD84F8}.Debug|Any CPU.ActiveCfg = Development
+		{01050248-079B-4728-B978-A9D510FD84F8}.Debug|Any CPU.Build.0 = Development
+		{01050248-079B-4728-B978-A9D510FD84F8}.Development|Any CPU.ActiveCfg = Development
+		{01050248-079B-4728-B978-A9D510FD84F8}.Development|Any CPU.Build.0 = Development
+		{01050248-079B-4728-B978-A9D510FD84F8}.Release|Any CPU.ActiveCfg = Development
+		{01050248-079B-4728-B978-A9D510FD84F8}.Release|Any CPU.Build.0 = Development
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

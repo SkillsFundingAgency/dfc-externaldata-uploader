@@ -1,0 +1,2102 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="3/13/2019 3:19:45 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="DESKTOP-2M34BCF"
+  DTS:CreatorName="DESKTOP-2M34BCF\mahin"
+  DTS:DTSID="{60BBDAD7-0623-47B3-89F8-BC3C7801DADC}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.1100.123"
+  DTS:LocaleID="2057"
+  DTS:ObjectName="OnspdUpdatePackage"
+  DTS:PackageType="5"
+  DTS:VersionBuild="9"
+  DTS:VersionGUID="{1CEB3C15-DD82-4419-B376-9692BFE32CD9}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[dfc-coursedirectory]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{E3FE440B-486D-4FAF-A300-76FC11B6A2AC}"
+      DTS:ObjectName="dfc-coursedirectory">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="__CDConnectionString__"/>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[onspd]"
+      DTS:CreationName="AzureStorage"
+      DTS:DTSID="{8D2B781B-21C5-473E-BBF3-E9526658BF50}"
+      DTS:ObjectName="onspd">
+      <DTS:ObjectData>
+        <AzureStorageConnectionManager
+          ConnectionString="__AzureOnspdConnectionString">
+          <AccountKey
+            Sensitive="0"
+            Encrypted="0">__AzureOnspdAccountKey__</AccountKey>
+        </AzureStorageConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:PackageParameters>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="7"
+      DTS:DTSID="{7BC9123D-B12C-4226-9640-4847F778BB2C}"
+      DTS:ObjectName="UpdatedDateTime"
+      DTS:Required="True">
+      <DTS:Property
+        DTS:DataType="7"
+        DTS:Name="ParameterValue">3/14/2019 10:10:00 AM</DTS:Property>
+    </DTS:PackageParameter>
+  </DTS:PackageParameters>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Clear out temp tables"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{B56744F9-A4D6-4C25-9833-A9BE6E1C53B3}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Clear out temp tables"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{E3FE440B-486D-4FAF-A300-76FC11B6A2AC}"
+          SQLTask:SqlStatementSource="DELETE FROM dbo.[ONSPD-Temp]" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Csv to Sql"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{18C4EE16-58F4-4A4A-861E-3D2EC88DB657}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Csv to Sql"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Csv to Sql\Azure Blob Onspd"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="© Microsoft Corporation; All Rights Reserved;"
+              description="Extracts data from a blob in Azure Storage. The supported file formats are: Text and Avro."
+              name="Azure Blob Onspd"
+              usesDispositions="true"
+              validateExternalMetadata="False">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The name of blob container"
+                  expressionType="Notify"
+                  name="Blob Container">onspd-blob-container</property>
+                <property
+                  dataType="System.String"
+                  description="The full name of blob"
+                  expressionType="Notify"
+                  name="Blob Name">onspd.csv</property>
+                <property
+                  dataType="System.Int32"
+                  description="The format of blob file"
+                  name="Blob Format"
+                  typeConverter="Microsoft.SqlServer.IntegrationService.CloudComponents.Utilities.AzBlobFormatEnumStringConverter">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Compress File"
+                  name="Compress File">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="The compression type"
+                  name="Compression Type"
+                  typeConverter="Microsoft.SqlServer.IntegrationService.CloudComponents.Utilities.AzCompressionTypeEnumStringConverter">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The compression level"
+                  name="Compression Level"
+                  typeConverter="Microsoft.SqlServer.IntegrationService.CloudComponents.Utilities.AzCompressionLevelEnumStringConverter">0</property>
+                <property
+                  dataType="System.String"
+                  description="The character used to delimit columns in text file"
+                  name="Column Delimiter">,</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Column names in the first data row"
+                  name="First Row as Column Names">true</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">AzBlobSrc</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Csv to Sql\Azure Blob Onspd.Connections[Azure Storage]"
+                  connectionManagerID="Package.ConnectionManagers[onspd]"
+                  connectionManagerRefId="Package.ConnectionManagers[onspd]"
+                  description="Connection Manager for Azure Storage"
+                  name="Azure Storage" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output]"
+                  name="Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pcd]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[pcd]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pcd]"
+                      name="pcd"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pcd2]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[pcd2]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pcd2]"
+                      name="pcd2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pcds]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[pcds]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pcds]"
+                      name="pcds"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[dointr]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[dointr]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[dointr]"
+                      name="dointr"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[doterm]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[doterm]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[doterm]"
+                      name="doterm"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oscty]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oscty]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oscty]"
+                      name="oscty"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ced]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[ced]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ced]"
+                      name="ced"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oslaua]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oslaua]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oslaua]"
+                      name="oslaua"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[osward]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[osward]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[osward]"
+                      name="osward"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[parish]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[parish]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[parish]"
+                      name="parish"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[usertype]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[usertype]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[usertype]"
+                      name="usertype"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oseast1m]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oseast1m]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oseast1m]"
+                      name="oseast1m"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[osnrth1m]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[osnrth1m]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[osnrth1m]"
+                      name="osnrth1m"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[osgrdind]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[osgrdind]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[osgrdind]"
+                      name="osgrdind"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oshlthau]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oshlthau]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oshlthau]"
+                      name="oshlthau"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[nhser]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[nhser]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[nhser]"
+                      name="nhser"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ctry]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[ctry]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ctry]"
+                      name="ctry"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[rgn]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[rgn]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[rgn]"
+                      name="rgn"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[streg]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[streg]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[streg]"
+                      name="streg"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pcon]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[pcon]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pcon]"
+                      name="pcon"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[eer]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[eer]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[eer]"
+                      name="eer"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[teclec]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[teclec]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[teclec]"
+                      name="teclec"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ttwa]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[ttwa]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ttwa]"
+                      name="ttwa"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pct]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[pct]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pct]"
+                      name="pct"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[nuts]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[nuts]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[nuts]"
+                      name="nuts"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[statsward]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[statsward]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[statsward]"
+                      name="statsward"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oa01]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oa01]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oa01]"
+                      name="oa01"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[casward]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[casward]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[casward]"
+                      name="casward"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[park]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[park]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[park]"
+                      name="park"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lsoa01]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[lsoa01]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lsoa01]"
+                      name="lsoa01"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[msoa01]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[msoa01]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[msoa01]"
+                      name="msoa01"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ur01ind]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[ur01ind]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ur01ind]"
+                      name="ur01ind"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oac01]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oac01]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oac01]"
+                      name="oac01"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oa11]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oa11]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oa11]"
+                      name="oa11"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lsoa11]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[lsoa11]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lsoa11]"
+                      name="lsoa11"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[msoa11]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[msoa11]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[msoa11]"
+                      name="msoa11"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[wz11]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[wz11]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[wz11]"
+                      name="wz11"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ccg]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[ccg]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ccg]"
+                      name="ccg"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[bua11]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[bua11]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[bua11]"
+                      name="bua11"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[buasd11]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[buasd11]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[buasd11]"
+                      name="buasd11"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ru11ind]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[ru11ind]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ru11ind]"
+                      name="ru11ind"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oac11]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oac11]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oac11]"
+                      name="oac11"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lat]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[lat]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lat]"
+                      name="lat"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[long]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[long]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[long]"
+                      name="long"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lep1]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[lep1]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lep1]"
+                      name="lep1"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lep2]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[lep2]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lep2]"
+                      name="lep2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pfa]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[pfa]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pfa]"
+                      name="pfa"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[imd]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[imd]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[imd]"
+                      name="imd"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[calncv]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[calncv]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[calncv]"
+                      name="calncv"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[stp]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[stp]"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[stp]"
+                      name="stp"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[pcd]"
+                      dataType="wstr"
+                      length="255"
+                      name="pcd" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[pcd2]"
+                      dataType="wstr"
+                      length="255"
+                      name="pcd2" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[pcds]"
+                      dataType="wstr"
+                      length="255"
+                      name="pcds" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[dointr]"
+                      dataType="wstr"
+                      length="255"
+                      name="dointr" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[doterm]"
+                      dataType="wstr"
+                      length="255"
+                      name="doterm" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oscty]"
+                      dataType="wstr"
+                      length="255"
+                      name="oscty" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[ced]"
+                      dataType="wstr"
+                      length="255"
+                      name="ced" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oslaua]"
+                      dataType="wstr"
+                      length="255"
+                      name="oslaua" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[osward]"
+                      dataType="wstr"
+                      length="255"
+                      name="osward" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[parish]"
+                      dataType="wstr"
+                      length="255"
+                      name="parish" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[usertype]"
+                      dataType="wstr"
+                      length="255"
+                      name="usertype" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oseast1m]"
+                      dataType="wstr"
+                      length="255"
+                      name="oseast1m" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[osnrth1m]"
+                      dataType="wstr"
+                      length="255"
+                      name="osnrth1m" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[osgrdind]"
+                      dataType="wstr"
+                      length="255"
+                      name="osgrdind" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oshlthau]"
+                      dataType="wstr"
+                      length="255"
+                      name="oshlthau" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[nhser]"
+                      dataType="wstr"
+                      length="255"
+                      name="nhser" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[ctry]"
+                      dataType="wstr"
+                      length="255"
+                      name="ctry" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[rgn]"
+                      dataType="wstr"
+                      length="255"
+                      name="rgn" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[streg]"
+                      dataType="wstr"
+                      length="255"
+                      name="streg" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[pcon]"
+                      dataType="wstr"
+                      length="255"
+                      name="pcon" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[eer]"
+                      dataType="wstr"
+                      length="255"
+                      name="eer" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[teclec]"
+                      dataType="wstr"
+                      length="255"
+                      name="teclec" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[ttwa]"
+                      dataType="wstr"
+                      length="255"
+                      name="ttwa" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[pct]"
+                      dataType="wstr"
+                      length="255"
+                      name="pct" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[nuts]"
+                      dataType="wstr"
+                      length="255"
+                      name="nuts" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[statsward]"
+                      dataType="wstr"
+                      length="255"
+                      name="statsward" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oa01]"
+                      dataType="wstr"
+                      length="255"
+                      name="oa01" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[casward]"
+                      dataType="wstr"
+                      length="255"
+                      name="casward" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[park]"
+                      dataType="wstr"
+                      length="255"
+                      name="park" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[lsoa01]"
+                      dataType="wstr"
+                      length="255"
+                      name="lsoa01" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[msoa01]"
+                      dataType="wstr"
+                      length="255"
+                      name="msoa01" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[ur01ind]"
+                      dataType="wstr"
+                      length="255"
+                      name="ur01ind" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oac01]"
+                      dataType="wstr"
+                      length="255"
+                      name="oac01" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oa11]"
+                      dataType="wstr"
+                      length="255"
+                      name="oa11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[lsoa11]"
+                      dataType="wstr"
+                      length="255"
+                      name="lsoa11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[msoa11]"
+                      dataType="wstr"
+                      length="255"
+                      name="msoa11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[wz11]"
+                      dataType="wstr"
+                      length="255"
+                      name="wz11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[ccg]"
+                      dataType="wstr"
+                      length="255"
+                      name="ccg" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[bua11]"
+                      dataType="wstr"
+                      length="255"
+                      name="bua11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[buasd11]"
+                      dataType="wstr"
+                      length="255"
+                      name="buasd11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[ru11ind]"
+                      dataType="wstr"
+                      length="255"
+                      name="ru11ind" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[oac11]"
+                      dataType="wstr"
+                      length="255"
+                      name="oac11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[lat]"
+                      dataType="wstr"
+                      length="255"
+                      name="lat" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[long]"
+                      dataType="wstr"
+                      length="255"
+                      name="long" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[lep1]"
+                      dataType="wstr"
+                      length="255"
+                      name="lep1" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[lep2]"
+                      dataType="wstr"
+                      length="255"
+                      name="lep2" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[pfa]"
+                      dataType="wstr"
+                      length="255"
+                      name="pfa" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[imd]"
+                      dataType="wstr"
+                      length="255"
+                      name="imd" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[calncv]"
+                      dataType="wstr"
+                      length="255"
+                      name="calncv" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].ExternalColumns[stp]"
+                      dataType="wstr"
+                      length="255"
+                      name="stp" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output]"
+                  isErrorOut="true"
+                  name="Error output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[pcd]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[pcd]"
+                      name="pcd" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[pcd2]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[pcd2]"
+                      name="pcd2" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[pcds]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[pcds]"
+                      name="pcds" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[dointr]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[dointr]"
+                      name="dointr" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[doterm]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[doterm]"
+                      name="doterm" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oscty]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oscty]"
+                      name="oscty" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ced]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ced]"
+                      name="ced" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oslaua]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oslaua]"
+                      name="oslaua" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[osward]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[osward]"
+                      name="osward" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[parish]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[parish]"
+                      name="parish" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[usertype]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[usertype]"
+                      name="usertype" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oseast1m]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oseast1m]"
+                      name="oseast1m" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[osnrth1m]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[osnrth1m]"
+                      name="osnrth1m" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[osgrdind]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[osgrdind]"
+                      name="osgrdind" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oshlthau]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oshlthau]"
+                      name="oshlthau" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[nhser]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[nhser]"
+                      name="nhser" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ctry]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ctry]"
+                      name="ctry" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[rgn]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[rgn]"
+                      name="rgn" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[streg]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[streg]"
+                      name="streg" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[pcon]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[pcon]"
+                      name="pcon" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[eer]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[eer]"
+                      name="eer" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[teclec]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[teclec]"
+                      name="teclec" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ttwa]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ttwa]"
+                      name="ttwa" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[pct]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[pct]"
+                      name="pct" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[nuts]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[nuts]"
+                      name="nuts" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[statsward]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[statsward]"
+                      name="statsward" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oa01]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oa01]"
+                      name="oa01" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[casward]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[casward]"
+                      name="casward" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[park]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[park]"
+                      name="park" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[lsoa01]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[lsoa01]"
+                      name="lsoa01" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[msoa01]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[msoa01]"
+                      name="msoa01" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ur01ind]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ur01ind]"
+                      name="ur01ind" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oac01]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oac01]"
+                      name="oac01" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oa11]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oa11]"
+                      name="oa11" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[lsoa11]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[lsoa11]"
+                      name="lsoa11" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[msoa11]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[msoa11]"
+                      name="msoa11" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[wz11]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[wz11]"
+                      name="wz11" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ccg]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ccg]"
+                      name="ccg" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[bua11]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[bua11]"
+                      name="bua11" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[buasd11]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[buasd11]"
+                      name="buasd11" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ru11ind]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[ru11ind]"
+                      name="ru11ind" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oac11]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[oac11]"
+                      name="oac11" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[lat]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[lat]"
+                      name="lat" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[long]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[long]"
+                      name="long" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[lep1]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[lep1]"
+                      name="lep1" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[lep2]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[lep2]"
+                      name="lep2" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[pfa]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[pfa]"
+                      name="pfa" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[imd]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[imd]"
+                      name="imd" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[calncv]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[calncv]"
+                      name="calncv" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[stp]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Error output].Columns[stp]"
+                      name="stp" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Csv to Sql\sql - dfc-coursedirectory"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="sql - dfc-coursedirectory"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[ONSPD_Temp]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Csv to Sql\sql - dfc-coursedirectory.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[dfc-coursedirectory]"
+                  connectionManagerRefId="Package.ConnectionManagers[dfc-coursedirectory]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[pcd]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="pcd"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[pcd]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pcd]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[pcd2]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="pcd2"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[pcd2]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pcd2]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[pcds]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="pcds"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[pcds]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pcds]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[dointr]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="dointr"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[dointr]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[dointr]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[doterm]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="doterm"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[doterm]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[doterm]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[oscty]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="oscty"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oscty]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oscty]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[ced]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="ced"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[ced]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ced]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[oslaua]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="oslaua"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oslaua]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oslaua]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[osward]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="osward"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[osward]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[osward]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[parish]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="parish"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[parish]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[parish]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[usertype]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="usertype"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[usertype]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[usertype]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[oseast1m]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="oseast1m"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oseast1m]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oseast1m]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[osnrth1m]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="osnrth1m"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[osnrth1m]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[osnrth1m]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[osgrdind]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="osgrdind"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[osgrdind]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[osgrdind]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[nhser]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="nhser"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[nhser]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[nhser]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[ctry]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="ctry"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[ctry]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ctry]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[rgn]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="rgn"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[rgn]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[rgn]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[streg]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="streg"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[streg]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[streg]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[pcon]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="pcon"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[pcon]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pcon]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[eer]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="eer"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[eer]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[eer]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[teclec]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="teclec"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[teclec]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[teclec]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[ttwa]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="ttwa"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[ttwa]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ttwa]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[pct]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="pct"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[pct]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pct]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[nuts]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="nuts"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[nuts]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[nuts]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[statsward]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="statsward"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[statsward]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[statsward]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[oa01]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="oa01"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oa01]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oa01]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[casward]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="casward"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[casward]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[casward]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[park]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="park"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[park]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[park]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[lsoa01]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="lsoa01"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[lsoa01]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lsoa01]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[msoa01]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="msoa01"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[msoa01]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[msoa01]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[ur01ind]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="ur01ind"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[ur01ind]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ur01ind]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[oac01]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="oac01"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oac01]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oac01]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[oa11]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="oa11"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oa11]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oa11]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[lsoa11]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="lsoa11"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[lsoa11]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lsoa11]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[msoa11]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="msoa11"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[msoa11]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[msoa11]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[wz11]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="wz11"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[wz11]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[wz11]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[ccg]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="ccg"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[ccg]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ccg]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[bua11]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="bua11"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[bua11]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[bua11]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[buasd11]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="buasd11"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[buasd11]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[buasd11]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[ru11ind]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="ru11ind"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[ru11ind]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[ru11ind]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[oac11]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="oac11"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oac11]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[oac11]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[lat]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="lat"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[lat]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lat]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[long]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="long"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[long]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[long]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[lep1]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="lep1"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[lep1]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lep1]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[lep2]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="lep2"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[lep2]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[lep2]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[pfa]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="pfa"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[pfa]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[pfa]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[imd]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="imd"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[imd]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[imd]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[calncv]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="calncv"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[calncv]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[calncv]" />
+                    <inputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].Columns[stp]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="stp"
+                      externalMetadataColumnId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[stp]"
+                      lineageId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output].Columns[stp]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[pcd]"
+                      dataType="wstr"
+                      length="10"
+                      name="pcd" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[pcd2]"
+                      dataType="wstr"
+                      length="10"
+                      name="pcd2" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[pcds]"
+                      dataType="wstr"
+                      length="10"
+                      name="pcds" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[dointr]"
+                      dataType="wstr"
+                      length="10"
+                      name="dointr" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[doterm]"
+                      dataType="wstr"
+                      length="10"
+                      name="doterm" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oscty]"
+                      dataType="wstr"
+                      length="50"
+                      name="oscty" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[ced]"
+                      dataType="wstr"
+                      length="50"
+                      name="ced" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oslaua]"
+                      dataType="wstr"
+                      length="50"
+                      name="oslaua" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[osward]"
+                      dataType="wstr"
+                      length="50"
+                      name="osward" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[parish]"
+                      dataType="wstr"
+                      length="50"
+                      name="parish" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[usertype]"
+                      dataType="wstr"
+                      length="5"
+                      name="usertype" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oseast1m]"
+                      dataType="wstr"
+                      length="50"
+                      name="oseast1m" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[osnrth1m]"
+                      dataType="wstr"
+                      length="50"
+                      name="osnrth1m" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[osgrdind]"
+                      dataType="wstr"
+                      length="5"
+                      name="osgrdind" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[nhser]"
+                      dataType="wstr"
+                      length="50"
+                      name="nhser" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[ctry]"
+                      dataType="wstr"
+                      length="50"
+                      name="ctry" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[rgn]"
+                      dataType="wstr"
+                      length="50"
+                      name="rgn" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[streg]"
+                      dataType="nText"
+                      name="streg" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[pcon]"
+                      dataType="wstr"
+                      length="50"
+                      name="pcon" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[eer]"
+                      dataType="wstr"
+                      length="50"
+                      name="eer" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[teclec]"
+                      dataType="wstr"
+                      length="50"
+                      name="teclec" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[ttwa]"
+                      dataType="wstr"
+                      length="50"
+                      name="ttwa" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[pct]"
+                      dataType="wstr"
+                      length="50"
+                      name="pct" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[nuts]"
+                      dataType="wstr"
+                      length="50"
+                      name="nuts" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[statsward]"
+                      dataType="wstr"
+                      length="50"
+                      name="statsward" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oa01]"
+                      dataType="wstr"
+                      length="50"
+                      name="oa01" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[casward]"
+                      dataType="wstr"
+                      length="50"
+                      name="casward" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[park]"
+                      dataType="wstr"
+                      length="50"
+                      name="park" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[lsoa01]"
+                      dataType="wstr"
+                      length="50"
+                      name="lsoa01" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[msoa01]"
+                      dataType="wstr"
+                      length="50"
+                      name="msoa01" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[ur01ind]"
+                      dataType="wstr"
+                      length="20"
+                      name="ur01ind" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oac01]"
+                      dataType="wstr"
+                      length="5"
+                      name="oac01" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oa11]"
+                      dataType="wstr"
+                      length="50"
+                      name="oa11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[lsoa11]"
+                      dataType="wstr"
+                      length="50"
+                      name="lsoa11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[msoa11]"
+                      dataType="wstr"
+                      length="50"
+                      name="msoa11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[wz11]"
+                      dataType="wstr"
+                      length="50"
+                      name="wz11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[ccg]"
+                      dataType="wstr"
+                      length="50"
+                      name="ccg" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[bua11]"
+                      dataType="wstr"
+                      length="50"
+                      name="bua11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[buasd11]"
+                      dataType="wstr"
+                      length="50"
+                      name="buasd11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[ru11ind]"
+                      dataType="wstr"
+                      length="20"
+                      name="ru11ind" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[oac11]"
+                      dataType="wstr"
+                      length="5"
+                      name="oac11" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[lat]"
+                      dataType="wstr"
+                      length="50"
+                      name="lat" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[long]"
+                      dataType="wstr"
+                      length="50"
+                      name="long" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[lep1]"
+                      dataType="wstr"
+                      length="50"
+                      name="lep1" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[lep2]"
+                      dataType="wstr"
+                      length="50"
+                      name="lep2" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[pfa]"
+                      dataType="wstr"
+                      length="50"
+                      name="pfa" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[imd]"
+                      dataType="wstr"
+                      length="50"
+                      name="imd" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[calncv]"
+                      dataType="wstr"
+                      length="50"
+                      name="calncv" />
+                    <externalMetadataColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input].ExternalColumns[stp]"
+                      dataType="wstr"
+                      length="50"
+                      name="stp" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Csv to Sql\sql - dfc-coursedirectory.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Csv to Sql\sql - dfc-coursedirectory.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Csv to Sql\sql - dfc-coursedirectory.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Csv to Sql\sql - dfc-coursedirectory.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Csv to Sql.Paths[Output]"
+              endId="Package\Csv to Sql\sql - dfc-coursedirectory.Inputs[OLE DB Destination Input]"
+              name="Output"
+              startId="Package\Csv to Sql\Azure Blob Onspd.Outputs[Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Execute Merge"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{B05A7958-9B05-4EDB-9833-B49A96A1F2BD}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Execute Merge"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{E3FE440B-486D-4FAF-A300-76FC11B6A2AC}"
+          SQLTask:SqlStatementSource="EXEC [dbo].[dfc_OnspdUpdate] ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="$Package::UpdatedDateTime"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="7"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{AA262A14-5B41-468A-B8E9-88CC233D8D80}"
+      DTS:From="Package\Clear out temp tables"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Csv to Sql" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{C36BDEA8-B810-43B4-8FA0-53B2D0620094}"
+      DTS:From="Package\Csv to Sql"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Execute Merge" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="151.5,42"
+          Id="Package\Clear out temp tables"
+          TopLeft="47,42.25" />
+        <NodeLayout
+          Size="126,42"
+          Id="Package\Csv to Sql"
+          TopLeft="59.75,147" />
+        <NodeLayout
+          Size="130,42"
+          Id="Package\Execute Merge"
+          TopLeft="59.75,220.75" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="122.75,84.25">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,62.75"
+              Start="0,0"
+              End="0,55.25">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,55.25" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="123.75,189">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.75"
+              Start="0,0"
+              End="0,24.25">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.25" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Csv to Sql">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="193,42"
+          Id="Package\Csv to Sql\sql - dfc-coursedirectory"
+          TopLeft="47.4285714285714,172.285714285714" />
+        <NodeLayout
+          Size="162.5,42"
+          Id="Package\Csv to Sql\Azure Blob Onspd"
+          TopLeft="53.4285714285714,44.2857142857142" />
+        <EdgeLayout
+          Id="Package\Csv to Sql.Paths[Output]"
+          TopLeft="135.017857142857,86.2857142857142">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,86"
+              Start="0,0"
+              End="0,78.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,78.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Csv to Sql\Azure Blob Onspd">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Csv to Sql\sql - dfc-coursedirectory">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
